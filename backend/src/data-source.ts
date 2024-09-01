@@ -1,16 +1,19 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm";
-import * as dotenv from "dotenv"
-
-dotenv.config()
+import { User } from "./entity/User";
+import { Product } from "./entity/Product";
+import { Cart } from "./entity/Cart";
+import { CartItem } from "./entity/CartItem";
+import { dbConfig } from "./config";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
     host: "localhost",
-    port: 5432,
-    username: "Ravi Shrestha",
-    password: "Root123",
-    database: "task1",
+    port: dbConfig.DB_PORT,
+    username: dbConfig.DB_USER,
+    password: dbConfig.DB_PASS,
+    database: dbConfig.DB_NAME,
     synchronize: true,
-    entities: []
+    logging: true,
+    entities: [User, Product, Cart, CartItem]
 })

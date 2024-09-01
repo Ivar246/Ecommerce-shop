@@ -1,18 +1,30 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "./data-source";
+import { appConfig } from "./config";
+import productRoute from "./route/product.route"
+import BaseError from "./errors/Base.error";
 const app = express()
 
 async function bootstrap() {
+    app.use(express.json())
 
     await AppDataSource.initialize();
 
-    app.get("/", (req, res, next) => {
-        res.send("hello")
+    app.use("/api/product", productRoute);
+
+    // error handling middleware
+    app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
+        if (!err.status)
+            err.status = 500
+        err.name = "INTERNAL SERVER ERROR"
+
+        res.status(err.status).json({ message: err.message, error: err.name, status: err.status });
     })
 
-    app.listen(3000, () => {
-        console.log("listening on port 3000")
+    app.listen(appConfig.PORT, () => {
+        console.log(`listening on port ${appConfig.PORT}`)
     })
+
 }
 
 
