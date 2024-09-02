@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express-serve-static-core";
 import { UserService } from "../service/user.service";
 import { CreateUserDto } from "../dto";
+import { UserReqParams } from "../interface";
 
 class UserController {
 
-    userService: UserService
+    private userService: UserService
 
     constructor() {
         this.userService = new UserService()
@@ -20,7 +21,24 @@ class UserController {
         }
     }
 
-    deleteUser() {
+    async getUserById(req: Request<UserReqParams>, res: Response, next: NextFunction) {
+        try {
+            const user = await this.userService.getUserById(req.params.user_id)
 
+            res.status(200).json({ data: user })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+    async getUserByEmail(req: Request<UserReqParams>, res: Response, next: NextFunction) {
+        try {
+            const user = await this.userService.getUserByEmail(req.params.email)
+
+            res.status(200).json({ data: user })
+        } catch (error) {
+            next(error)
+        }
     }
 }

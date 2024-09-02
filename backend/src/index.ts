@@ -2,7 +2,10 @@ import express, { NextFunction, Request, Response } from "express";
 import { AppDataSource } from "./data-source";
 import { appConfig } from "./config";
 import productRoute from "./route/product.route"
+import authRoute from "./route/auth.route"
+import cartRoute from "./route/cart.route"
 import BaseError from "./errors/Base.error";
+
 const app = express()
 
 async function bootstrap() {
@@ -11,6 +14,8 @@ async function bootstrap() {
     await AppDataSource.initialize();
 
     app.use("/api/product", productRoute);
+    app.use("/api/auth", authRoute);
+    app.use("/api/cart", cartRoute);
 
     // error handling middleware
     app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
@@ -24,7 +29,6 @@ async function bootstrap() {
     app.listen(appConfig.PORT, () => {
         console.log(`listening on port ${appConfig.PORT}`)
     })
-
 }
 
 

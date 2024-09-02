@@ -4,9 +4,9 @@ import { Cart } from "../entity/Cart";
 import { CartItem } from "../entity/CartItem";
 import { ProductService } from "./product.service";
 import { UserService } from "./user.service";
+import { BadRequestError } from "../errors";
 
-
-class CartService {
+export class CartService {
 
     cartRepository: Repository<Cart>
     cartItemRepository: Repository<CartItem>
@@ -23,7 +23,7 @@ class CartService {
     async addToCart(user_id: number, product_id: number, quantity: number) {
         try {
             const product = await this.productService.getOne(product_id)
-            const user = await this.userService.getUser(user_id)
+            const user = await this.userService.getUserById(user_id)
 
             let cart = await this.cartRepository.findOne({
                 where: {
@@ -60,15 +60,31 @@ class CartService {
         }
     }
 
-    getCartItems(user_id: number) {
+    async fetchCartItems(user_id: number) {
         try {
-            await cart = this.cartRepository.findOneBy({ user: { id: user_id } })
-            const cartItems = await this.cartItemRepository.find
+            const cart = await this.cartRepository.findOneBy({ user: { id: user_id } })
+            const cartItems = await this.cartItemRepository.find({ where: { cart: { id: cart.id } } })
+            return cartItems
         } catch (error) {
-
+            throw error
         }
     }
 
+    async removeCartItem(user_id: number, product_Id: number) {
+        try {
+            const cart = await this.cartRepository.findOneBy({ user: { id: user_id } });
+            const cartItems = await this.cartItemRepository.find({ where: { cart: { id: cart.id } } })
+
+            if (!cartItems.find(cartItem => cartItem.product.id === product_Id))
+                throw new BadRequestError("Product not available in cart");
+
+            const filteredCartItems = cartItems.filter(cartItem => cartItem.product.id === product_Id)
 
 
+            await this.cartRepository.save(filteredCartItems)
+        }
+        catch (error) {
+            throw error
+        }
+    }
 }

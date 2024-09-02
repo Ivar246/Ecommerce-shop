@@ -4,7 +4,7 @@ import { ProdReqParam } from "../interface";
 import { CreateProductDto } from "../dto";
 
 class ProductController {
-    productService: ProductService
+    private productService: ProductService
 
     constructor() {
         this.productService = new ProductService()
@@ -50,6 +50,7 @@ class ProductController {
         }
     }
 }
+
 
 export const productController = new ProductController
 
