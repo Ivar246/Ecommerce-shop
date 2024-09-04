@@ -2,20 +2,35 @@ import { EntityManager, Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Product } from "../entity/Product";
 import { NotFoundError } from "../errors/notFound.error";
+import { CreateProductDto } from "../dto";
+import { BadRequestError } from "../errors";
 
 export class ProductService {
-    productRepository: Repository<Product>
+    private productRepository: Repository<Product>
     constructor() {
         this.productRepository = AppDataSource.getRepository(Product)
     }
 
-    add(data: {}) {
+    async add(data: CreateProductDto) {
+
         try {
-            const product = this.productRepository.create(data);
 
-            this.productRepository.save(product)
+            const isProdExist = await this.productRepository.findOne({ where: { name: data.name } })
 
-            return product
+            if (isProdExist)
+                throw new BadRequestError(`product with name ${data.name} already exist`)
+
+            const product = new Product();
+
+            product.name = data.name
+            product.available_quantity = data.available_quantity
+            product.price = data.price
+            product.description = data.description
+            product.imageUrl = data.imageUrl || null
+
+            const savedProduct = await AppDataSource.manager.save(Product, product)
+
+            return savedProduct
 
         } catch (error) {
             throw error
@@ -37,21 +52,19 @@ export class ProductService {
         try {
             const products = await this.productRepository.find();
 
-
             return products;
         } catch (error) {
             throw error
         }
     }
 
-    delete(id: number) {
+    async delete(id: number) {
         try {
-            const product = this.productRepository.findOneBy({ id: id })
+            const product = await this.productRepository.findOneBy({ id: id })
             if (!product)
                 throw new NotFoundError(`Product with id ${id} not found`)
 
-            this.productRepository.delete(id);
-
+            await this.productRepository.delete(id);
             return;
         }
         catch (error) {

@@ -1,6 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Role } from "../enums";
-
+import { Checkout } from "./Checkout"
+import { Cart } from "./Cart";
+import { Order } from "./Order";
 @Entity("users")
 export class User {
     @PrimaryGeneratedColumn()
@@ -27,9 +29,20 @@ export class User {
         default: Role.USER
     })
     role: Role
+
+    @OneToMany(() => Checkout, checkout => checkout.user)
+    checkouts: Checkout[]
+
+    @OneToOne(() => Cart, cart => cart.user, { cascade: true })
+    cart: Cart
+
+    @OneToMany(() => Order, order => order.user, { cascade: true })
+    orders: Order[]
+
     @CreateDateColumn()
     createdAt: Date
 
     @UpdateDateColumn()
     updatedAt: Date
+
 }

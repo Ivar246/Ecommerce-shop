@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { cartController } from "../controller/cart.controller";
+import authenticated from "../middleware/authenticate.middleware";
 
 const router = Router()
 
-router.get("/", cartController.fetchCartItems)
-router.delete("/:id", cartController.removeCartItem)
-router.post("/addToCart", cartController.addToCart)
+router.get("/cartItems", authenticated, cartController.fetchCartItems)
+router.delete("/removeItem/:product_id", authenticated, cartController.removeCartItem)
+router.post("/addItem/:product_id", authenticated, cartController.addToCart)
 
 export default router

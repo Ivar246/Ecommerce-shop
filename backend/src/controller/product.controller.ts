@@ -4,33 +4,34 @@ import { ProdReqParam } from "../interface";
 import { CreateProductDto } from "../dto";
 
 class ProductController {
+
     private productService: ProductService
 
     constructor() {
         this.productService = new ProductService()
     }
 
-    addProduct = (req: Request<{}, {}, CreateProductDto>, res: Response, next: NextFunction) => {
+    addProduct = async (req: Request<{}, {}, CreateProductDto>, res: Response, next: NextFunction) => {
         try {
-            const result = this.productService.add(req.body)
+            const result = await this.productService.add(req.body)
 
-            res.status(201).json({ data: result })
+            return res.status(201).json({ data: result })
         }
         catch (error) {
             next(error)
         }
     }
 
-    removeProduct(req: Request<ProdReqParam>, res: Response, next: NextFunction) {
+    removeProduct = async (req: Request<ProdReqParam>, res: Response, next: NextFunction) => {
         try {
-            this.productService.delete(req.params.id)
-            res.json()
+            await this.productService.delete(req.params.id)
+            res.status(200).json({ message: "Product deleted successfully" })
         } catch (error) {
             next(error)
         }
     }
 
-    async getProduct(req: Request<ProdReqParam>, res: Response, next: NextFunction) {
+    getProduct = async (req: Request<ProdReqParam>, res: Response, next: NextFunction) => {
         try {
             const product = await this.productService.getOne(req.params.id)
             res.status(200).json({ data: product })

@@ -11,19 +11,26 @@ class UserController {
         this.userService = new UserService()
     }
 
-    async createUser(req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) {
+    createUser = async (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => {
         try {
             const user = await this.userService.create(req.body)
 
-            res.status(201).json({ data: user })
+            res.status(200).json({ data: user })
         } catch (error) {
             next(error)
         }
     }
 
-    async getUserById(req: Request<UserReqParams>, res: Response, next: NextFunction) {
+    getUserById = async (req: Request<UserReqParams>, res: Response, next: NextFunction) => {
         try {
-            const user = await this.userService.getUserById(req.params.user_id)
+            let { cart } = req.query
+            let isCart: boolean;
+            if (cart)
+                isCart = true
+            else
+                isCart = false
+
+            const user = await this.userService.getUserById(req.params.user_id, isCart)
 
             res.status(200).json({ data: user })
         } catch (error) {
@@ -32,7 +39,7 @@ class UserController {
     }
 
 
-    async getUserByEmail(req: Request<UserReqParams>, res: Response, next: NextFunction) {
+    getUserByEmail = async (req: Request<UserReqParams>, res: Response, next: NextFunction) => {
         try {
             const user = await this.userService.getUserByEmail(req.params.email)
 
@@ -41,4 +48,16 @@ class UserController {
             next(error)
         }
     }
+
+    getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await this.userService.getUsers();
+
+            res.status(200).json({ data: users })
+        } catch (error) {
+            next(error)
+        }
+    }
 }
+
+export const userController = new UserController()

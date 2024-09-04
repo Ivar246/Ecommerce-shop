@@ -8,7 +8,7 @@ export class AuthController {
         this.authService = new AuthService()
     }
 
-    async register(req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) {
+    register = async (req: Request<{}, {}, CreateUserDto>, res: Response, next: NextFunction) => {
         try {
             await this.authService.register(req.body)
             res.status(201).json({ message: "user registered Successfylly" });
@@ -17,10 +17,10 @@ export class AuthController {
         }
     }
 
-    async login(req: Request<{}, {}, LoginDto>, res: Response, next: NextFunction) {
+    login = async (req: Request<{}, {}, LoginDto>, res: Response, next: NextFunction) => {
         try {
             const result = await this.authService.login(req.body)
-            res.status(201).json({ data: result, message: "user registered Successfylly" });
+            res.status(201).json({ token: result, message: "user loggedin Successfylly" });
         } catch (error) {
             next(error)
         }

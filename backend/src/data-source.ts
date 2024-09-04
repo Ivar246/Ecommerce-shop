@@ -4,6 +4,9 @@ import { User } from "./entity/User";
 import { Product } from "./entity/Product";
 import { Cart } from "./entity/Cart";
 import { CartItem } from "./entity/CartItem";
+import { Checkout } from "./entity/Checkout";
+import { Order } from "./entity/Order";
+import { OrderItem } from "./entity/OrderItem";
 import { dbConfig } from "./config";
 
 export const AppDataSource = new DataSource({
@@ -14,6 +17,6 @@ export const AppDataSource = new DataSource({
     password: dbConfig.DB_PASS,
     database: dbConfig.DB_NAME,
     synchronize: true,
-    logging: true,
-    entities: [User, Product, Cart, CartItem]
+    logging: false,
+    entities: [User, Product, Cart, CartItem, Checkout, Order, OrderItem]
 })

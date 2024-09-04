@@ -19,7 +19,8 @@ export class UserService {
             if (user)
                 throw new ConflictError("User already exist.")
 
-            const hash = await bcrypt.hash(data.password, 10);
+            const salt = await bcrypt.genSalt(10)
+            const hash = await bcrypt.hash(data.password, salt);
 
             const newUser = this.userRepository.create()
             newUser.email = data.email
@@ -34,15 +35,27 @@ export class UserService {
         }
     }
 
-    async getUserById(user_id: number) {
+    async getUserById(user_id: number, cart: boolean) {
         try {
-            const user = await this.userRepository.findOneBy({ id: user_id });
+            const user = await this.userRepository.findOne({
+                where: { id: user_id },
+                relations: cart ? ["cart", "cart.cart_items.product",] : []
+            });
             if (!user)
-                throw new NotFoundError(`user w${user_id} not found`);
+                throw new NotFoundError(`user with ${user_id} not found`);
 
             return user
         }
         catch (error) {
+            throw error
+        }
+    }
+
+    getUsers = async () => {
+        try {
+            const users = await this.userRepository.find({});
+            return users
+        } catch (error) {
             throw error
         }
     }
@@ -59,7 +72,4 @@ export class UserService {
             throw error
         }
     }
-
-
-
 }

@@ -11,9 +11,10 @@ class CartController {
         this.cartService = new CartService()
     }
 
-    addToCart = (req: Request<AddToCartParams, {}, AddToCartDto>, res: Response, next: NextFunction) => {
+    addToCart = async (req: Request<AddToCartParams, {}, AddToCartDto>, res: Response, next: NextFunction) => {
         try {
-            const cart = this.cartService.addToCart(req.user.id, req.params.product_id, req.body.quantity)
+            console.log("hello")
+            const cart = await this.cartService.addToCart(req.user.id, +req.params.product_id, req.body.quantity)
             res.status(200).json({
                 data: cart
             })
@@ -32,9 +33,18 @@ class CartController {
 
     }
 
-    removeCartItem = async (req: Request, res: Response, next: NextFunction) => {
+    removeCartItem = async (req: Request<AddToCartParams>, res: Response, next: NextFunction) => {
         try {
-            await this.cartService.removeCartItem(req.user.id, 2)
+            const product = await this.cartService.removeCartItem(req.user.id, +req.params.product_id)
+            res.status(200).json({ data: product, message: "Items remove successfylly" })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    updateCartItem = async (req: Request<AddToCartParams>, res: Response, next: NextFunction) => {
+        try {
+            await this.cartService.updateCartItem(req.user.id, req.params.product_id)
             res.status(200).json({ message: "Items remove successfylly" })
         } catch (error) {
             next(error)

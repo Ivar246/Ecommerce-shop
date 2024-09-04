@@ -3,5 +3,5 @@ export interface CreateProductDto {
     description?: string
     price: number
     imageUrl?: string
-    quantity: number
+    available_quantity: number
 }

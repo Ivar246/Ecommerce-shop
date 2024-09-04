@@ -1,3 +1,3 @@
 export interface AddToCartParams {
-    product_id: number
+    product_id?: number
 }

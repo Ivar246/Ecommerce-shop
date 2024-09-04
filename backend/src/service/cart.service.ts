@@ -23,39 +23,40 @@ export class CartService {
     async addToCart(user_id: number, product_id: number, quantity: number) {
         try {
             const product = await this.productService.getOne(product_id)
-            const user = await this.userService.getUserById(user_id)
-
+            const user = await this.userService.getUserById(user_id, true)
             let cart = await this.cartRepository.findOne({
                 where: {
                     user: { id: user_id }
-                }
+                },
+                relations: ["cart_items", "cart_items.product"]
             })
-
+            //check if cart already exist if not create new one
             if (!cart) {
                 cart = this.cartRepository.create();
-                cart.cart_items = [];
                 cart.user = user
                 await this.cartRepository.save(cart)
             }
+            console.log(cart.cart_items)
+            //check if cartItem already exist
+            let cartItem = cart.cart_items.find((item => item.product?.id === product_id))
 
-            let cartItem = cart.cart_items.find((item => item.product.id === product_id))
-
-            if (cartItem)
-                cartItem.quantity += quantity;
-
+            if (cartItem) {
+                cartItem.quantity += 1;
+                await this.cartItemRepository.save(cartItem)
+            }
             else {
+                // creating new cartItem
                 cartItem = this.cartItemRepository.create();
                 cartItem.cart = cart
                 cartItem.quantity = 1;
                 cartItem.product = product
-                cart.cart_items.push(cartItem)
+                await this.cartItemRepository.save(cartItem)
             }
-            await this.cartItemRepository.save(cartItem)
 
-            return cart
-
+            return cartItem
         }
         catch (error) {
+            console.log(error)
             throw error;
         }
     }
@@ -63,28 +64,55 @@ export class CartService {
     async fetchCartItems(user_id: number) {
         try {
             const cart = await this.cartRepository.findOneBy({ user: { id: user_id } })
-            const cartItems = await this.cartItemRepository.find({ where: { cart: { id: cart.id } } })
+            if (!cart)
+                return []
+            const cartItems = await this.cartItemRepository.find({
+                where: { cart: { id: cart.id } },
+                relations: ["product"]
+            })
             return cartItems
         } catch (error) {
             throw error
         }
     }
 
-    async removeCartItem(user_id: number, product_Id: number) {
+    async removeCartItem(user_id: number, product_id: number) {
         try {
+            console.log(typeof product_id)
             const cart = await this.cartRepository.findOneBy({ user: { id: user_id } });
-            const cartItems = await this.cartItemRepository.find({ where: { cart: { id: cart.id } } })
+            const cartItems = await this.cartItemRepository.find({
+                where: { cart: { id: cart.id } },
+                relations: ["product"]
+            })
+            console.log(cartItems)
 
-            if (!cartItems.find(cartItem => cartItem.product.id === product_Id))
+            if (!cartItems.find(cartItem => cartItem.product?.id === product_id))
                 throw new BadRequestError("Product not available in cart");
 
-            const filteredCartItems = cartItems.filter(cartItem => cartItem.product.id === product_Id)
+            const deletedProduct = await this.cartItemRepository.delete({ product: { id: product_id } })
 
-
-            await this.cartRepository.save(filteredCartItems)
         }
         catch (error) {
+            console.log(error)
             throw error
+        }
+    }
+
+    async updateCartItem(user_id: number, product_id: number) {
+        try {
+            const cart = await this.cartRepository.findOne({ where: { user: { id: user_id } } });
+            const cartItems = await this.cartItemRepository.find({ where: { cart: { id: cart.id } } })
+
+            const cartItem = cartItems.find(cartItem => cartItem.product.id === product_id)
+            if (!cartItem)
+                throw new BadRequestError("Item to update not found");
+            cartItem.quantity += 1;
+
+            await this.cartItemRepository.save(cartItem);
+
+            return cartItems
+        } catch (error) {
+            throw error;
         }
     }
 }

@@ -1,32 +1,53 @@
 get http://localhost:3000
+@ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhYmNAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjUzNTI2NjMsImV4cCI6MTcyNTQzOTA2M30.AVddKlEKOF5Ap-9M5Q9l14w8jkXHKXHZ_1rRsL70Ns4
+@ADMIN_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJyYXZpc3RoYUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU0MzQ3MDcsImV4cCI6MTcyNTUyMTEwN30.7WdHuxJTpjVQzO6c5KhC9WV0d1hdsR4joXQ4IB84jd8
+@ACCESS_TOKEN2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ4eXpAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjU0NDA0ODEsImV4cCI6MTcyNTUyNjg4MX0.xHJQOrS9s61VtHURAc-r0NQHAxbLbtrzMs_-PpmnCOk
+@ADMIN_EMAIL=ravistha@gmail.com
 
 ### login
 post http://localhost:4000/api/auth/login
 Content-Type: application/json
 
 {
-"email":"abc@gmail.com",
-"Password":""
+"email":"xyz@gmail.com",
+"password":"ravistha"
 }
 
 ### signup 
-post http://localhost:4000/api/auth/signup
+post http://localhost:4000/api/auth/register
 Content-Type: application/json
 
 {
-"email":"abc@gmail.com",
-"Password":"ravistha"
+"username":"ravi",
+"email":"xyz@gmail.com",
+"password":"ravistha"
 }
 
+##### USER API
+### get user by id
+get http://localhost:4000/api/user/1
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 
+### get user by id with their carts
+get http://localhost:4000/api/user/1?cart=true
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
+
+### get All users
+get http://localhost:4000/api/user/users
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
+
+
+### PRODUCT API
 ### create product
 post http://localhost:4000/api/product/create
 Content-Type: application/json
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 
 {
-    "name": "fintech headphone",
-    "description":"nice headphone",
-    "price":20
+    "name": "hi laptop",
+    "description":" The is the great laptop.It will meet your need",
+    "price":20000,
+    "available_quantity":100
 }
 
 ### get products
@@ -34,4 +55,54 @@ get http://localhost:4000/api/product/products
 
 
 ### get product by Id
-get http://localhost:4000/api/product/1
+get http://localhost:4000/api/product/3
+
+
+### delete product by id
+delete http://localhost:4000/api/product/delete/2
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+
+###### CART apis
+### add item to cart
+post http://localhost:4000/api/cart/addItem/4
+Authorization: Bearer {{ACCESS_TOKEN}}
+Content-Type: application/json
+
+
+### fetch cartItems
+get http://localhost:4000/api/cart/cartItems
+Authorization: Bearer {{ACCESS_TOKEN}}
+### remove item from cart
+
+### Remove item from cart
+delete http://localhost:4000/api/cart/removeItem/9
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###### CHECKOUT API
+### checkout 
+post http://localhost:4000/api/checkout
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+
+### ORDER API
+get http://localhost:4000/api/order/orders
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###  update order status (only for admin)
+PUT http://localhost:4000/api/order/admin/update_order_status/14
+Content-Type: application/json
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
+
+{
+    "status":"rejected"
+}
+
+### get all orders 
+get http://localhost:4000/api/order/admin/orders?status=accepted&items=true
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
+
+
+### get single order (owner of order && andmin only)
+get http://localhost:4000/api/order/14
+Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}

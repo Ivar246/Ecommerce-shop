@@ -1,9 +1,10 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Product } from "./Product"
 import { Cart } from "./Cart"
+import { Order } from "./Order"
 
-@Entity("cart_items")
-export class CartItem {
+@Entity("order_items")
+export class OrderItem {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -13,10 +14,10 @@ export class CartItem {
     })
     quantity: number
 
-    @ManyToOne(() => Cart, cart => cart.cart_items)
-    cart: Cart
+    @ManyToOne(() => Order, order => order.order_items)
+    order: Order
 
-    @ManyToOne(() => Product, product => product.cart_items)
+    @ManyToOne(() => Product, product => product.order_items)
     product: Product
 
     @CreateDateColumn()
