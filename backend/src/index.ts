@@ -12,12 +12,14 @@ import orderRoute from "./route/order.route"
 import BaseError from "./errors/Base.error";
 import { User } from "./entity/User";
 import { Role } from "./enums";
+import swaggerUi from "swagger-ui-express"
+import swaggerJSDoc from "swagger-jsdoc"
+import swaggerDocs from "./swagger"
 
 const app = express()
 
 
 app.use(cors())
-
 app.use(express.json())
 
 AppDataSource.initialize().then((dataSource) => {
@@ -51,6 +53,7 @@ AppDataSource.initialize().then((dataSource) => {
         res.status(err.status).json({ message: err.message, error: err.name, status: err.status });
     })
 
+    swaggerDocs(app, appConfig.PORT)
     app.listen(appConfig.PORT, () => {
         console.log(`listening on port ${appConfig.PORT}`)
     })

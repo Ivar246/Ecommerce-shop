@@ -12,7 +12,7 @@ const authenticated = (req: Request, res: Response, next: NextFunction) => {
 
     jwt.verify(token, AuthConfig.ACCESS_TOKEN_SECRET, (err, payload: Payload) => {
         if (err)
-            next(new BadRequestError(err.message))
+            next(new ForbiddenError(err.message))
         req.user = payload
     })
     return next()

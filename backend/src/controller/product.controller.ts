@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 import { ProductService } from "../service/product.service";
 import { ProdReqParam } from "../interface";
-import { CreateProductDto } from "../dto";
+import { CreateProductDto, UpdateProductDto } from "../dto";
 
 class ProductController {
 
@@ -22,9 +22,20 @@ class ProductController {
         }
     }
 
+    updateProduct = async (req: Request<ProdReqParam, {}, UpdateProductDto>, res: Response, next: NextFunction) => {
+        try {
+            const result = await this.productService.update(req.params.product_id, req.body)
+
+            return res.status(201).json({ data: result })
+        }
+        catch (error) {
+            next(error)
+        }
+    }
+
     removeProduct = async (req: Request<ProdReqParam>, res: Response, next: NextFunction) => {
         try {
-            await this.productService.delete(req.params.id)
+            await this.productService.delete(req.params.product_id)
             res.status(200).json({ message: "Product deleted successfully" })
         } catch (error) {
             next(error)
@@ -33,7 +44,7 @@ class ProductController {
 
     getProduct = async (req: Request<ProdReqParam>, res: Response, next: NextFunction) => {
         try {
-            const product = await this.productService.getOne(req.params.id)
+            const product = await this.productService.getOne(req.params.product_id)
             res.status(200).json({ data: product })
         } catch (error) {
             next(error)

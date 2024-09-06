@@ -1,8 +1,8 @@
-import { EntityManager, Repository } from "typeorm";
+import { EntityManager, Repository, UpdateResult } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Product } from "../entity/Product";
 import { NotFoundError } from "../errors/notFound.error";
-import { CreateProductDto } from "../dto";
+import { CreateProductDto, UpdateProductDto } from "../dto";
 import { BadRequestError } from "../errors";
 
 export class ProductService {
@@ -11,7 +11,7 @@ export class ProductService {
         this.productRepository = AppDataSource.getRepository(Product)
     }
 
-    async add(data: CreateProductDto) {
+    async add(data: CreateProductDto): Promise<Product> {
 
         try {
 
@@ -37,7 +37,7 @@ export class ProductService {
         }
     }
 
-    async getOne(id: number) {
+    async getOne(id: number): Promise<Product> {
         try {
             const product = await this.productRepository.findOneBy({ id: id })
             if (!product)
@@ -58,7 +58,7 @@ export class ProductService {
         }
     }
 
-    async delete(id: number) {
+    async delete(id: number): Promise<void> {
         try {
             const product = await this.productRepository.findOneBy({ id: id })
             if (!product)
@@ -71,4 +71,21 @@ export class ProductService {
             throw error
         }
     }
+
+    async update(product_id: number, data: UpdateProductDto): Promise<UpdateResult> {
+        try {
+            // find product
+            const product = await this.productRepository.findOne({ where: { id: product_id } })
+            if (!product) {
+                throw new BadRequestError(`product with id ${product_id} doesn'tesixt`)
+            }
+
+            const updatedProduct = await this.productRepository.update(product_id, data);
+
+            return updatedProduct;
+        } catch (error) {
+            throw error
+        }
+    }
+
 }

@@ -20,7 +20,7 @@ export class CartService {
         this.userService = new UserService()
     }
 
-    async addToCart(user_id: number, product_id: number, quantity: number) {
+    async addToCart(user_id: number, product_id: number, quantity: number): Promise<CartItem> {
         try {
             const product = await this.productService.getOne(product_id)
             const user = await this.userService.getUserById(user_id, true)
@@ -34,13 +34,14 @@ export class CartService {
             if (!cart) {
                 cart = this.cartRepository.create();
                 cart.user = user
+                cart.cart_items = []
                 await this.cartRepository.save(cart)
             }
-            console.log(cart.cart_items)
             //check if cartItem already exist
             let cartItem = cart.cart_items.find((item => item.product?.id === product_id))
 
             if (cartItem) {
+                // increment cart item
                 cartItem.quantity += 1;
                 await this.cartItemRepository.save(cartItem)
             }

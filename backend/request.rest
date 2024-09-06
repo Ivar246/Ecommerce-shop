@@ -1,6 +1,6 @@
 get http://localhost:3000
-@ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhYmNAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjUzNTI2NjMsImV4cCI6MTcyNTQzOTA2M30.AVddKlEKOF5Ap-9M5Q9l14w8jkXHKXHZ_1rRsL70Ns4
-@ADMIN_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJyYXZpc3RoYUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU0MzQ3MDcsImV4cCI6MTcyNTUyMTEwN30.7WdHuxJTpjVQzO6c5KhC9WV0d1hdsR4joXQ4IB84jd8
+@ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ4eXpAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjU1OTgzOTgsImV4cCI6MTcyNTY4NDc5OH0.QZ4A9QaZVrQGCsIgwyjoMQ8U7u3C8yKBJtsJYnHZTrI
+@ADMIN_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJyYXZpc3RoYUBnbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MjU1OTc4NDYsImV4cCI6MTcyNTY4NDI0Nn0.mWNWXZBdryYzX33cWLIQNs80sxf7lDZEKydyAATl4uo
 @ACCESS_TOKEN2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJ4eXpAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MjU0NDA0ODEsImV4cCI6MTcyNTUyNjg4MX0.xHJQOrS9s61VtHURAc-r0NQHAxbLbtrzMs_-PpmnCOk
 @ADMIN_EMAIL=ravistha@gmail.com
 
@@ -28,7 +28,7 @@ Content-Type: application/json
 get http://localhost:4000/api/user/1
 Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 
-### get user by id with their carts
+### get user by id with their id
 get http://localhost:4000/api/user/1?cart=true
 Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 
@@ -65,7 +65,7 @@ Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###### CART apis
 ### add item to cart
-post http://localhost:4000/api/cart/addItem/4
+post http://localhost:4000/api/cart/addItem/21
 Authorization: Bearer {{ACCESS_TOKEN}}
 Content-Type: application/json
 
@@ -99,7 +99,7 @@ Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 }
 
 ### get all orders 
-get http://localhost:4000/api/order/admin/orders?status=accepted&items=true
+get http://localhost:4000/api/order/admin/orders?items=false
 Authorization: Bearer {{ADMIN_ACCESS_TOKEN}}
 
 

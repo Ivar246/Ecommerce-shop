@@ -52,10 +52,13 @@ class OrderService {
     }
 
     async getAllOrders(status: OrderStatus | null = null, items: boolean = false): Promise<Order[]> {
-        const query: FindManyOptions = status ? {
-            where: { status: status },
+        console.log(items)
+        const query: FindManyOptions = {
+            where: status ? { status: status } : {},
             relations: items ? ["order_items", "order_items.product"] : []
-        } : {}
+        }
+
+        console.log(query)
         try {
             const orders = await this.orderRepository.find(query)
 

@@ -3,6 +3,7 @@ import { Role } from "../enums";
 import { Checkout } from "./Checkout"
 import { Cart } from "./Cart";
 import { Order } from "./Order";
+import { Exclude } from "class-transformer";
 @Entity("users")
 export class User {
     @PrimaryGeneratedColumn()
@@ -21,6 +22,7 @@ export class User {
         type: "varchar",
 
     })
+    @Exclude()
     password: string
 
     @Column({
