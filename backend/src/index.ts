@@ -11,10 +11,12 @@ import userRoute from "./route/user.route"
 import orderRoute from "./route/order.route"
 import BaseError from "./errors/Base.error";
 import { User } from "./entity/User";
-import { Role } from "./enums";
+import { AuditLogAction, LogType, Role } from "./enums";
 import swaggerUi from "swagger-ui-express"
 import swaggerJSDoc from "swagger-jsdoc"
 import swaggerDocs from "./swagger"
+import { apiRequestLogger } from "./utils/apiRequestLogger";
+import logger from "./utils/auditLogger";
 
 const app = express()
 
@@ -32,9 +34,12 @@ AppDataSource.initialize().then((dataSource) => {
     // user.role = Role.ADMIN
 
     // dataSource.manager.save(User, user)
-
     return
 }).then(() => {
+
+    apiRequestLogger(app)
+
+    logger.debug({ message: "first log", email: "abc@gmail.com", user: "admin", module: "User", actionType: AuditLogAction.CREATE, logType: LogType.WARN, ip: "0000.000.000.000" })
 
     app.use("/api/product", productRoute);
     app.use("/api/auth", authRoute);
