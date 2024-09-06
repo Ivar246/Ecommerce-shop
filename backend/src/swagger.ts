@@ -6,12 +6,12 @@ const options: swaggerJsDoc.Options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Mini Blog API',
-            description: "API endpoints for a mini blog services documented on swagger",
+            title: 'Ecommerce Api',
+            description: "API endpoints for a ecommerce platform",
             contact: {
-                name: "Desmond Obisi",
-                email: "info@miniblog.com",
-                url: "https://github.com/DesmondSanctity/node-js-swagger"
+                name: "Ravi Shrestha",
+                email: "ravistha869@gmail.com",
+                url: "https://github.com/Ivar246/Ecommerce-shop"
             },
             version: '1.0.0',
         },
