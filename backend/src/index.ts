@@ -1,5 +1,5 @@
-import express, { NextFunction, Request, Response } from "express";
-import cors from "cors"
+import express from "express";
+import cors, { CorsOptions } from "cors"
 import * as bcrypt from "bcrypt"
 import { AppDataSource } from "./data-source";
 import { appConfig } from "./config";
@@ -17,11 +17,16 @@ import swaggerJSDoc from "swagger-jsdoc"
 import swaggerDocs from "./swagger"
 import { apiRequestLogger } from "./utils/apiRequestLogger";
 import logger from "./utils/auditLogger";
+import { globalErrorHandler } from "./middleware/globalErrorHandler.middleware";
 
 const app = express()
 
+const corsOptions: CorsOptions = {
+    origin: [appConfig.FRONTEND_URL],
+    methods: ["PUT", "GET", "POST", "DELETE"]
+}
 
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(express.json())
 
 AppDataSource.initialize().then((dataSource) => {
@@ -37,9 +42,8 @@ AppDataSource.initialize().then((dataSource) => {
     return
 }).then(() => {
 
+    // morgan logger to log api request info
     apiRequestLogger(app)
-
-    logger.debug({ message: "first log", email: "abc@gmail.com", user: "admin", module: "User", actionType: AuditLogAction.CREATE, logType: LogType.WARN, ip: "0000.000.000.000" })
 
     app.use("/api/product", productRoute);
     app.use("/api/auth", authRoute);
@@ -49,14 +53,7 @@ AppDataSource.initialize().then((dataSource) => {
     app.use("/api/order", orderRoute)
 
     // error handling middleware
-    app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
-        if (!err.status) {
-            err.status = 500
-            err.name = "INTERNAL SERVER ERROR"
-        }
-
-        res.status(err.status).json({ message: err.message, error: err.name, status: err.status });
-    })
+    app.use(globalErrorHandler)
 
     swaggerDocs(app, appConfig.PORT)
     app.listen(appConfig.PORT, () => {
