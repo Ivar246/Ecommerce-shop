@@ -1,8 +1,11 @@
 export default class BaseError extends Error {
+
     status: number
-    constructor(message: string, status: number, name: string) {
+    title: string
+
+    constructor(message: string, status: number, title: string) {
         super(message);
         this.status = status;
-        this.name = name
+        this.title = title
     }
 }
