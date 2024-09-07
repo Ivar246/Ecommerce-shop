@@ -1,18 +1,21 @@
 {
     "compilerOptions": {
+        "lib": [
+            "ES6"
+        ],
         "module": "CommonJS",
-        "target": "ES2020",
+        "moduleResolution": "Node",
+        "target": "ES6",
         "sourceMap": true,
         "rootDir": "./src",
         "outDir": "./dist",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "esModuleInterop": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
     },
     "include": [
-        "src/**/*",
-        "./index.d.ts"
+        "src/**/*.ts",
     ],
     "files": [
         "./index.d.ts"

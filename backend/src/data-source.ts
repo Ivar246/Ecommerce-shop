@@ -7,7 +7,9 @@ import { CartItem } from "./entity/CartItem";
 import { Checkout } from "./entity/Checkout";
 import { Order } from "./entity/Order";
 import { OrderItem } from "./entity/OrderItem";
+import { AuditLog } from "./entity/Auditlog";
 import { dbConfig } from "./config";
+
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -18,5 +20,5 @@ export const AppDataSource = new DataSource({
     database: dbConfig.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [User, Product, Cart, CartItem, Checkout, Order, OrderItem]
+    entities: [User, Product, Cart, CartItem, Checkout, Order, OrderItem, AuditLog]
 })

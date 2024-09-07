@@ -1,5 +1,4 @@
 import Transport from "winston-transport"
-import util from "util"
 import { AppDataSource } from "../data-source";
 import { AuditLog } from "../entity/Auditlog"
 //
@@ -7,7 +6,7 @@ import { AuditLog } from "../entity/Auditlog"
 // of the base functionality and `.exceptions.handle()`.
 //
 export class DbTransport extends Transport {
-    constructor(opts) {
+    constructor(opts: any) {
         super(opts);
         //
         // Consume any custom options here. e.g.:
@@ -24,7 +23,6 @@ export class DbTransport extends Transport {
         });
 
         // Perform the writing to the remote service
-        console.log(info)
         try {
             const auditLogRepo = AppDataSource.getRepository(AuditLog);
             const auditLog = auditLogRepo.create({
