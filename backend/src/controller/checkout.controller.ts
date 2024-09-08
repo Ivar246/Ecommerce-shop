@@ -6,7 +6,7 @@ export class CheckoutController {
     checkout = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const order = await checkoutService.checkout(req.user.id);
-            res.status(201).json({ data: order, message: "Checkout successfull, Your order has been created" })
+            return res.status(201).json({ data: order, message: "Checkout successfull, Your order has been created" })
         } catch (error) {
             next(error)
         }

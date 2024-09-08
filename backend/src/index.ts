@@ -21,13 +21,7 @@ import { globalErrorHandler } from "./middleware/globalErrorHandler.middleware";
 
 const app = express()
 
-const corsOptions: CorsOptions = {
-    origin: [appConfig.FRONTEND_URL],
-    methods: ["PUT", "GET", "POST", "DELETE"]
-}
 
-app.use(cors(corsOptions))
-app.use(express.json())
 
 AppDataSource.initialize().then((dataSource) => {
     console.log("Database connected successfully.")
@@ -41,7 +35,13 @@ AppDataSource.initialize().then((dataSource) => {
     // dataSource.manager.save(User, user)
     return
 }).then(() => {
+    const corsOptions: CorsOptions = {
+        origin: [appConfig.FRONTEND_URL],
+        methods: ["PUT", "GET", "POST", "DELETE"]
+    }
+    app.use(cors(corsOptions))
 
+    app.use(express.json())
     // morgan logger to log api request info
     apiRequestLogger(app)
 
@@ -55,7 +55,9 @@ AppDataSource.initialize().then((dataSource) => {
     // error handling middleware
     app.use(globalErrorHandler)
 
+    // swagger 
     swaggerDocs(app, appConfig.PORT)
+
     app.listen(appConfig.PORT, () => {
         console.log(`listening on port ${appConfig.PORT}`)
     })

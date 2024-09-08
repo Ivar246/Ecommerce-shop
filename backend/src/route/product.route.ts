@@ -93,7 +93,7 @@ router.post("/create", authenticated, authorize(Role.ADMIN), productController.a
  *   put:
  *     tags:
  *       - Products
- *     summary: Get a single product by product_id
+ *     summary: Update product by product_id
  *     parameters:
  *       - name: product_id
  *         in: path

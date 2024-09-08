@@ -27,18 +27,36 @@ import { OrderStatus } from "../enums"
  *           type: string
  *           format: date-time
  *           example: "2024-09-04T08:15:24.485Z"
- *         order_items:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/OrderItem'
- *     OrdersResponse:
+ *     OrderWithOrderItems:
+ *       allOf:
+ *         - $ref: "#/components/schemas/Order"
+ *         - type: object
+ *           properties:
+ *             order_items:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/OrderItem"
+ *     AdminOrder:
+ *       allOf:
+ *         - $ref: "#/components/schemas/OrderWithOrderItems"
+ *         - type: object
+ *           properties:
+ *             user:
+ *               $ref: "#/components/schemas/UserDetail"
+ *     UserDetail:
  *       type: object
  *       properties:
- *         data:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Order'
-*/
+ *         id:
+ *           type: integer
+ *           example: 1
+ *         username:
+ *           type: string
+ *           example: "john_doe"
+ *         email:
+ *           type: string
+ *           example: "john@example.com"
+ */
+
 @Entity("orders")
 export class Order {
     @PrimaryGeneratedColumn()

@@ -28,7 +28,7 @@ const options: swaggerJsDoc.Options = {
             description: "Local server"
         },
     ],
-    apis: ['./src/route/*.ts', "./src/entity/*.ts"]
+    apis: ['./src/route/*.ts', "./src/entity/*.ts", "./src/interface/*.ts"]
 }
 
 const swaggerSpec = swaggerJsDoc(options)
