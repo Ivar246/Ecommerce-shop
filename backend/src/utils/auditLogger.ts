@@ -18,9 +18,9 @@ const transport: DailyRotateFile = new winston.transports.DailyRotateFile({
 // custom format for console
 const consoleLogFormat: winston.Logform.Format = winston.format.combine(
     winston.format.colorize(),
-    winston.format.printf(({ level, message, actionType, module, logType }) => {
+    winston.format.printf(({ level, message, action, module, logType }) => {
 
-        return `${level}: ${message} ${actionType} ${logType}`
+        return `${level}: ${message} ${action} ${logType}`
     })
 )
 

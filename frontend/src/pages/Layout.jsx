@@ -1,20 +1,9 @@
 import { Outlet, Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 const Layout = () => {
     return (
         <div>
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/Products">Products</Link>
-                    </li>
-                    <li>
-                        <Link to="/Cart">Cart</Link>
-                    </li>
-                </ul>
-            </nav>
+            <Navbar />
             <Outlet />
         </div>
     )
