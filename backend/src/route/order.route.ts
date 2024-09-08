@@ -55,7 +55,7 @@ const router = Router()
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/ErrorResponse"
+ *               $ref: "#/components/schemas/Error_500"
  */
 router.get("/user/orders", authenticated, orderController.getOrdersByUser)
 
@@ -106,7 +106,7 @@ router.get("/user/orders", authenticated, orderController.getOrdersByUser)
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/ErrorResponse"
+ *               $ref: "#/components/schemas/Error_500"
  */
 router.get("/admin/orders", authenticated, authorize(Role.ADMIN), orderController.getAllOrders)
 
@@ -168,7 +168,7 @@ router.get("/admin/orders", authenticated, authorize(Role.ADMIN), orderControlle
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/ErrorResponse"
+ *               $ref: "#/components/schemas/Error_500"
  */
 router.put("/admin/update_order_status/:order_id", authenticated, authorize(Role.ADMIN), orderController.updateOrderStatus)
 
@@ -211,7 +211,7 @@ router.put("/admin/update_order_status/:order_id", authenticated, authorize(Role
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error_500'
  *     security:
  *       - bearerAuth: []
  */

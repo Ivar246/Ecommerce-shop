@@ -60,7 +60,7 @@ const router = Router()
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/Error_500'
  */
 router.post("/", authenticated, checkoutController.checkout)
 

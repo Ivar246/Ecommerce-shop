@@ -5,5 +5,6 @@ export enum AuditLogAction {
     READ = "READ",
     LOGIN = "LOGIN",
     SIGNUP = "SIGN UP",
-    LOG_OUT = " LOG OUT"
+    LOG_OUT = " LOG OUT",
+    CHECKOUT = "CHECKOUT"
 }

@@ -48,17 +48,24 @@ const router = Router()
  *                   example: "User logged in successfully"
  *                   description: Success message.
  *       400:
- *         description: Invalid email or password
+ *         description: Bad request, invalid input data
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
- *       401:
- *         description: Unauthorized access (e.g., incorrect credentials)
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               InvalidEmail:
+ *                 summary: "Email format is invalid"
+ *                 value:
+ *                   code: 477
+ *                   title: "INVALID FORMAT"
+ *                   message: "The email address provided is not in a valid format."
+ *               InvalidPassword:
+ *                 summary: "Password does not match"
+ *                 value:
+ *                   code: 4926
+ *                   title: "INVALID DATA RECEIVED"
+ *                   message: "The password provided is incorrect."
  *       500:
  *         description: Internal server error
  *         content:
