@@ -4,7 +4,8 @@ import * as bcrypt from "bcrypt"
 import { UserService } from "./user.service";
 import { BadRequestError, ConflictError } from "../errors";
 import { AuthConfig } from "../config";
-import { Payload } from "../interface";
+import { Payload, Tokens } from "../interface";
+import { generateTokens } from "../utils/generateToken";
 
 export class AuthService {
     private userService: UserService
@@ -12,7 +13,7 @@ export class AuthService {
         this.userService = new UserService()
     }
 
-    async login(data: LoginDto) {
+    async login(data: LoginDto): Promise<Tokens> {
         try {
             //check if user already exist
             const user = await this.userService.getUserByEmail(data.email);
@@ -28,9 +29,10 @@ export class AuthService {
                 email: user.email,
                 role: user.role
             }
-            const token = jwt.sign(payload, AuthConfig.ACCESS_TOKEN_SECRET, { expiresIn: "1d" })
+            const { at, rt } = await generateTokens(payload);
 
-            return token
+            return { at, rt }
+
         } catch (error) {
             throw error
         }
@@ -38,8 +40,8 @@ export class AuthService {
 
     async register(data: CreateUserDto) {
         try {
-            console.log('oi')
             const user = await this.userService.create(data)
+
             delete user["password"]
             return user
 

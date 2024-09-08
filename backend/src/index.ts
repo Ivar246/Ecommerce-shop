@@ -16,7 +16,6 @@ import swaggerUi from "swagger-ui-express"
 import swaggerJSDoc from "swagger-jsdoc"
 import swaggerDocs from "./swagger"
 import { apiRequestLogger } from "./utils/apiRequestLogger";
-import logger from "./utils/auditLogger";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.middleware";
 
 const app = express()

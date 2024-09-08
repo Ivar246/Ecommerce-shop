@@ -2,6 +2,7 @@ import winston from "winston";
 import "winston-daily-rotate-file"
 import { DbTransport } from "./DbTransport";
 import DailyRotateFile from "winston-daily-rotate-file";
+import { AuditLogOpts } from "../interface";
 
 
 // logType specific color
@@ -19,7 +20,7 @@ const consoleLogFormat: winston.Logform.Format = winston.format.combine(
     winston.format.colorize(),
     winston.format.printf(({ level, message, actionType, module, logType }) => {
 
-        return `${level}: ${message} ${actionType.toUpperCase()} ${logType.toUpperCase()}`
+        return `${level}: ${message} ${actionType} ${logType}`
     })
 )
 
@@ -34,6 +35,8 @@ const logger: winston.Logger = winston.createLogger({
         new winston.transports.Console({ format: consoleLogFormat }),
     ]
 })
-console.log(logger)
 
-export default logger;
+export const auditLog = (opts: AuditLogOpts) => {
+
+    logger.info({ ...opts })
+}

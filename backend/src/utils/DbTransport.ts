@@ -27,7 +27,7 @@ export class DbTransport extends Transport {
             const auditLogRepo = AppDataSource.getRepository(AuditLog);
             const auditLog = auditLogRepo.create({
                 datetime: new Date(),
-                actionType: info.actionType || 'UNKNOWN',
+                action: info.actionType || 'UNKNOWN',
                 logType: info.logType || 'INFO',
                 user: info.user,
                 module: info.module,

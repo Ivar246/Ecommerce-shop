@@ -12,7 +12,7 @@ export class AuditLog {
         enum: AuditLogAction,
         default: AuditLogAction.CREATE
     })
-    actionType: AuditLogAction
+    action: AuditLogAction
 
     @Column({
         type: "enum",
