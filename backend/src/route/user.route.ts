@@ -8,6 +8,7 @@ import { Role } from "../enums";
 const router = Router()
 
 router.get("/:user_id", authenticated, userController.getUserById)
+
 router.get("/users", authenticated, authorize(Role.ADMIN), userController.getAllUsers)
 
 export default router

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
-import { AuditLogAction, LogType } from '../enums';
+import { AuditLogAction, LogType, Role } from '../enums';
 
 
 @Entity()
@@ -21,7 +21,11 @@ export class AuditLog {
     })
     logType: LogType
 
-    @Column("varchar")
+    @Column({
+        type: "enum",
+        enum: Role,
+        default: Role.USER
+    })
     user: string;
 
     @Column({ type: "varchar" })

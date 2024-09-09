@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authController } from "../controller/auth.controller";
+import { validateRefreshToken } from "../middleware/refreshTokenValidator.middleware";
 
 const router = Router()
 
@@ -74,6 +75,8 @@ const router = Router()
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/login", authController.login)
+
 router.post("/register", authController.register)
 
+router.get("/tokens", validateRefreshToken, authController.getRefreshToken)
 export default router

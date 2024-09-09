@@ -41,7 +41,6 @@ export class DbTransport extends Transport {
             console.error('Error saving log to database:', err);
         }
 
-
         callback();
     }
 };

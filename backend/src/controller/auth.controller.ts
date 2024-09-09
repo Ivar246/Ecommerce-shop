@@ -44,11 +44,11 @@ export class AuthController {
             const tokens = await this.authService.login(req.body)
 
             res.cookie("refresh_token", tokens.rt, {
-                maxAge: 60 * 24 * 3600 * 1000,
+                maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true
             })
 
-            res.status(201).json({ access_token: tokens.at, message: "user loggedin Successfylly" });
+            res.status(200).json({ access_token: tokens.at, message: "user loggedin Successfylly" });
 
             auditLog({
                 action: AuditLogAction.LOGIN,
@@ -72,6 +72,23 @@ export class AuthController {
                 email: req.body.email
             })
             next(error)
+        }
+    }
+
+    getRefreshToken = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { at, rt } = await this.authService.getRefreshToken(req.rt_detail);
+
+            res.cookie("refresh_token", rt, {
+                maxAge: 30 * 24 * 3600 * 1000,
+                httpOnly: true
+            })
+
+            res.status(201).json({ access_token: at, message: "Token generation successfull" });
+
+        } catch (error) {
+            next(error)
+
         }
     }
 }

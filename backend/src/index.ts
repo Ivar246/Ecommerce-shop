@@ -17,6 +17,7 @@ import swaggerJSDoc from "swagger-jsdoc"
 import swaggerDocs from "./swagger"
 import { apiRequestLogger } from "./utils/apiRequestLogger";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.middleware";
+import cookieParser from "cookie-parser"
 
 const app = express()
 
@@ -39,6 +40,9 @@ AppDataSource.initialize().then((dataSource) => {
         methods: ["PUT", "GET", "POST", "DELETE"]
     }
     app.use(cors(corsOptions))
+
+    app.use(cookieParser())
+
 
     app.use(express.json())
     // morgan logger to log api request info
