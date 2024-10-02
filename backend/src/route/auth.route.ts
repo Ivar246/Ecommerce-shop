@@ -6,7 +6,7 @@ const router = Router()
 
 /**
  * @openapi
- * /api/login:
+ * /api/auth/login:
  *   post:
  *     tags:
  *       - Auth
