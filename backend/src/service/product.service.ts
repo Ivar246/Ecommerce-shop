@@ -13,14 +13,17 @@ import { UploadFileType } from "../interface";
 import { Image } from "../entity/Image";
 import { deleteFile } from "../utils/deleteFile";
 import path from "path";
+import { ProductView } from "../entity/ProductView";
 
 export class ProductService {
   private productRepository: Repository<Product>;
   private imageRepository: Repository<Image>;
+  private productViewRepository: Repository<ProductView>;
 
   constructor() {
     this.productRepository = AppDataSource.getRepository(Product);
     this.imageRepository = AppDataSource.getRepository(Image);
+    this.productViewRepository = AppDataSource.getRepository(ProductView);
   }
 
   async add(data: CreateProductDto, files: UploadFileType): Promise<Product> {
@@ -68,10 +71,28 @@ export class ProductService {
     }
   }
 
-  async getOne(id: number): Promise<Product> {
+  async getOne(id: number, ip: string): Promise<Product> {
     try {
       const product = await this.productRepository.findOneBy({ id: id });
       if (!product) throw new NotFoundError(`Product with id ${id} not found`);
+
+      let productView = await this.productViewRepository.findOne({
+        where: {
+          productId: id,
+          ip: ip,
+        },
+      });
+
+      if (!productView) {
+        productView = new ProductView();
+        productView.ip = ip;
+        productView.productId = product.id;
+        await this.productViewRepository.save(productView);
+
+        product.view_count += 1;
+        await this.productRepository.save(product);
+      }
+
       return product;
     } catch (error) {
       throw error;

@@ -94,7 +94,10 @@ class ProductController {
     next: NextFunction
   ) => {
     try {
-      const product = await this.productService.getOne(req.params.product_id);
+      const product = await this.productService.getOne(
+        req.params.product_id,
+        req.ip
+      );
 
       res.status(200).json({ data: product });
 
