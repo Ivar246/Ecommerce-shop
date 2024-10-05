@@ -2,44 +2,47 @@ import { Request } from "express";
 import path from "path";
 import multer from "multer";
 import { uploadConfig } from "../config";
+import { AppDataSource } from "../data-source";
+import { Product } from "../entity/Product";
 
-
-// Set up storage for main image
-const mainImageStorage = multer.diskStorage({
-  destination:  (req:Request, file:Express.Multer.File, cb:any)=> {
-   return cb(null, './uploads/main');
+const storage = multer.diskStorage({
+  destination: (req: Request, file: Express.Multer.File, cb: any) => {
+    if (file.fieldname === "main_image") {
+      cb(null, "./uploads/main");
+    } else if (
+      file.fieldname === "additional_images" ||
+      file.fieldname === "image"
+    ) {
+      cb(null, "./uploads/additional");
+    } else {
+      cb(new Error("Invalid upload fieldname"), false);
+    }
   },
-  filename:  (req:Request, file:Express.Multer.File, cb:any) =>{
-    const productName = req.body["name"]
+  filename: async (req: Request, file: Express.Multer.File, cb: any) => {
+    let productName = req.body["name"];
 
-    const cleanProductName = productName.toLowerCase().replace(/[^a-z0-9]/gi, '-');
+    if (!productName) {
+      const product = await AppDataSource.getRepository(Product).findOneBy({
+        id: +req.params["product_id"],
+      });
+      productName = product.name;
+    }
 
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const cleanProductName = productName
+      .toLowerCase()
+      .replace(/[^a-z0-9]/gi, "-");
 
-    const fileName = `${cleanProductName}-${uniqueSuffix}.${path.extname(file.originalname)}`;
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+
+    console.log(file.size, uploadConfig.limits);
+    const fileName = `${cleanProductName}-${uniqueSuffix}${path.extname(
+      file.originalname
+    )}`;
     cb(null, fileName);
   },
 });
 
-// Set up storage for additional images
-const additionalImagesStorage = multer.diskStorage({
-  destination: function (req:Request, file:Express.Multer.File, cb:any) {
-    cb(null, './uploads/additional');
-  },
-
-  filename: function (req:Request, file:Express.Multer.File, cb:any) {
-    const productName = req.body["name"]
-
-    const cleanProductName = productName.toLowerCase().replace(/[^a-z0-9]/gi, '-');
-
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-
-    const fileName = `${cleanProductName}-${uniqueSuffix}.${path.extname(file.originalname)}`;
-    cb(null, fileName);
-  },
-});
-
-const fileFilter = (req:Request, file:Express.Multer.File, cb:any) => {
+const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
   const allowedTypes = /jpeg|jpg|png|gif/;
 
   const mimetype = allowedTypes.test(file.mimetype);
@@ -49,12 +52,12 @@ const fileFilter = (req:Request, file:Express.Multer.File, cb:any) => {
   if (mimetype && extname) {
     cb(null, true);
   } else {
-    cb(new Error('Only images are allowed!'), false);
+    cb(new Error("Only images are allowed!"), false);
   }
 };
 
-// Multer setup
-export const uploadMainImage = multer({ storage: mainImageStorage, fileFilter:fileFilter, limits:{fileSize:uploadConfig.limits }});
-export const uploadAdditionalImages = multer({ storage: additionalImagesStorage,limits:{fileSize:uploadConfig.limits} });
-
-
+export const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: uploadConfig.limits },
+});

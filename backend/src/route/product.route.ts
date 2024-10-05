@@ -3,9 +3,9 @@ import { productController } from "../controller/product.controller";
 import authenticated from "../middleware/authenticate.middleware";
 import authorize from "../middleware/authorize.middleware";
 import { Role } from "../enums";
+import { upload } from "../utils/multer";
 
-
-const router = Router()
+const router = Router();
 
 /**
  * @openapi
@@ -43,7 +43,7 @@ const router = Router()
  *             schema:
  *               $ref: "#/components/schemas/Error_500"
  */
-router.get("/products", productController.getProducts)
+router.get("/products", productController.getProducts);
 
 /**
  * @openapi
@@ -85,7 +85,7 @@ router.get("/products", productController.getProducts)
  *             schema:
  *               $ref: '#/components/schemas/Error_500'
  */
-router.get("/:product_id", productController.getProduct)
+router.get("/:product_id", productController.getProduct);
 
 /**
 /**
@@ -134,7 +134,16 @@ router.get("/:product_id", productController.getProduct)
  *             schema:
  *               $ref: '#/components/schemas/Error_500'
  */
-router.post("/create", authenticated, authorize(Role.ADMIN), productController.addProduct)
+router.post(
+  "/create",
+  authenticated,
+  authorize(Role.ADMIN),
+  upload.fields([
+    { name: "main_image", maxCount: 1 },
+    { name: "additional_images", maxCount: 5 },
+  ]),
+  productController.addProduct
+);
 
 /**
  * @openapi
@@ -183,7 +192,12 @@ router.post("/create", authenticated, authorize(Role.ADMIN), productController.a
  *             schema:
  *               $ref: '#/components/schemas/Error_500'
  */
-router.put("/update/:product_id", authenticated, authorize(Role.ADMIN), productController.updateProduct)
+router.put(
+  "/update/:product_id",
+  authenticated,
+  authorize(Role.ADMIN),
+  productController.updateProduct
+);
 
 /**
  * @openapi
@@ -226,6 +240,26 @@ router.put("/update/:product_id", authenticated, authorize(Role.ADMIN), productC
  *             schema:
  *               $ref: '#/components/schemas/Error_500'
  */
-router.delete("/delete/:product_id", authenticated, authorize(Role.ADMIN), productController.removeProduct)
+router.delete(
+  "/delete/:product_id",
+  authenticated,
+  authorize(Role.ADMIN),
+  productController.removeProduct
+);
 
-export default router
+router.post(
+  "/upload/:product_id",
+  authenticated,
+  authorize(Role.ADMIN),
+  upload.single("image"),
+  productController.upload
+);
+
+router.delete(
+  "/image/:image_id",
+  authenticated,
+  authorize(Role.ADMIN),
+  productController.removeImage
+);
+
+export default router;

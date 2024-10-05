@@ -5,8 +5,7 @@ import authorize from "../middleware/authorize.middleware";
 import { Role } from "../enums";
 import { OrderRequestValidator } from "../middleware/orderRequestValidator.middleware";
 
-
-const router = Router()
+const router = Router();
 
 /**
  * @openapi
@@ -21,7 +20,7 @@ const router = Router()
  *         name: status
  *         schema:
  *           type: string
- *           enum: 
+ *           enum:
  *             - pending
  *             - Accepted
  *             - delivered
@@ -57,7 +56,7 @@ const router = Router()
  *             schema:
  *               $ref: "#/components/schemas/Error_500"
  */
-router.get("/user/orders", authenticated, orderController.getOrdersByUser)
+router.get("/user/orders", authenticated, orderController.getOrdersByUser);
 
 /**
  * @openapi
@@ -72,7 +71,7 @@ router.get("/user/orders", authenticated, orderController.getOrdersByUser)
  *         name: status
  *         schema:
  *           type: string
- *           enum: 
+ *           enum:
  *             - pending
  *             - Accepted
  *             - delivered
@@ -108,8 +107,12 @@ router.get("/user/orders", authenticated, orderController.getOrdersByUser)
  *             schema:
  *               $ref: "#/components/schemas/Error_500"
  */
-router.get("/admin/orders", authenticated, authorize(Role.ADMIN), orderController.getAllOrders)
-
+router.get(
+  "/admin/orders",
+  authenticated,
+  authorize(Role.ADMIN),
+  orderController.getAllOrders
+);
 
 /**
  * @openapi
@@ -170,7 +173,12 @@ router.get("/admin/orders", authenticated, authorize(Role.ADMIN), orderControlle
  *             schema:
  *               $ref: "#/components/schemas/Error_500"
  */
-router.put("/admin/update_order_status/:order_id", authenticated, authorize(Role.ADMIN), orderController.updateOrderStatus)
+router.put(
+  "/admin/update_order_status/:order_id",
+  authenticated,
+  authorize(Role.ADMIN),
+  orderController.updateOrderStatus
+);
 
 /**
  * @openapi
@@ -215,6 +223,11 @@ router.put("/admin/update_order_status/:order_id", authenticated, authorize(Role
  *     security:
  *       - bearerAuth: []
  */
-router.get("/:order_id", authenticated, OrderRequestValidator, orderController.getOrder)
+router.get(
+  "/:order_id",
+  authenticated,
+  OrderRequestValidator,
+  orderController.getOrder
+);
 
-export default router
+export default router;

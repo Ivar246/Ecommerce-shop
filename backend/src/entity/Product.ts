@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { CartItem } from "./CartItem"
 import { OrderItem } from "./OrderItem"
+import { Image } from "./Image"
 
 /**
  * @openapi
@@ -113,7 +114,7 @@ export class Product {
         type: "varchar",
         nullable: true
     })
-    imageUrl: string
+    mainImageUrl: string
     @Column({
         type: "int"
     })
@@ -124,6 +125,9 @@ export class Product {
 
     @OneToMany(() => OrderItem, orderItem => orderItem.product)
     order_items: OrderItem[]
+
+    @OneToMany(()=>Image, image=>image.product)
+    images:Image[]
 
     @CreateDateColumn()
     createdAt: Date

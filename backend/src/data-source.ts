@@ -10,6 +10,8 @@ import { OrderItem } from "./entity/OrderItem";
 import { AuditLog } from "./entity/Auditlog";
 import { RefreshToken } from "./entity/RefreshToken";
 import { dbConfig } from "./config";
+import { AddFailedAttemptsAndLockToUsers1727924868429 } from "./migrations/1727924868429-AddFailedAttemptsAndLockToUsers";
+import { Image } from "./entity/Image";
 
 
 export const AppDataSource = new DataSource({
@@ -21,5 +23,7 @@ export const AppDataSource = new DataSource({
     database: dbConfig.DB_NAME,
     synchronize: true,
     logging: false,
-    entities: [User, Product, Cart, CartItem, Checkout, Order, OrderItem, AuditLog, RefreshToken]
+    entities: [User, Product, Cart, CartItem, Checkout, Order, OrderItem, AuditLog, RefreshToken,Image],
+    migrations: [AddFailedAttemptsAndLockToUsers1727924868429],
+   migrationsTableName:"migrations"
 })
