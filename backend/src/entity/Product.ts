@@ -127,6 +127,9 @@ export class Product {
   })
   available_quantity: number;
 
+  @Column({ type: "int", default: 0 })
+  view_count: number;
+
   @OneToMany(() => CartItem, (cartItem) => cartItem.product)
   cart_items: CartItem[];
 
