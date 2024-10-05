@@ -1,7 +1,17 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
-import { CartItem } from "./CartItem"
-import { OrderItem } from "./OrderItem"
-import { Image } from "./Image"
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
+import { CartItem } from "./CartItem";
+import { OrderItem } from "./OrderItem";
+import { Image } from "./Image";
+import { Wishlist } from "./Wishlist";
+import { WishlistItem } from "./WishlistItem";
 
 /**
  * @openapi
@@ -49,7 +59,7 @@ import { Image } from "./Image"
  *         product_img:
  *           type: string
  *           format: binary
- *           description: Optional product image file upload        
+ *           description: Optional product image file upload
  *     Product:
  *       type: object
  *       required:
@@ -85,53 +95,53 @@ import { Image } from "./Image"
  *         price: 19.99
  *         imageUrl: http://example.com/image.jpg
  *         available_quantity: 100
-*/
-
+ */
 
 @Entity("products")
 export class Product {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-        type: "varchar",
-        unique: true
-    })
-    name: string
+  @Column({
+    type: "varchar",
+    unique: true,
+  })
+  name: string;
 
-    @Column({
-        type: "text",
-        nullable: true
-    })
-    description: string
+  @Column({
+    type: "text",
+    nullable: true,
+  })
+  description: string;
 
-    @Column(
-        { type: "numeric" }
-    )
-    price: number
+  @Column({ type: "numeric" })
+  price: number;
 
-    @Column({
-        type: "varchar",
-        nullable: true
-    })
-    mainImageUrl: string
-    @Column({
-        type: "int"
-    })
-    available_quantity: number
+  @Column({
+    type: "varchar",
+    nullable: true,
+  })
+  mainImageUrl: string;
+  @Column({
+    type: "int",
+  })
+  available_quantity: number;
 
-    @OneToMany(() => CartItem, cartItem => cartItem.product)
-    cart_items: CartItem[]
+  @OneToMany(() => CartItem, (cartItem) => cartItem.product)
+  cart_items: CartItem[];
 
-    @OneToMany(() => OrderItem, orderItem => orderItem.product)
-    order_items: OrderItem[]
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  order_items: OrderItem[];
 
-    @OneToMany(()=>Image, image=>image.product)
-    images:Image[]
+  @OneToMany(() => Image, (image) => image.product)
+  images: Image[];
 
-    @CreateDateColumn()
-    createdAt: Date
+  @OneToMany(() => WishlistItem, (wishlistItem) => wishlistItem.product)
+  wishlistItems: WishlistItem[];
 
-    @UpdateDateColumn()
-    updatedAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

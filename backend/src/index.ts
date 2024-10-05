@@ -9,6 +9,7 @@ import cartRoute from "./route/cart.route";
 import checkoutRoute from "./route/checkout.route";
 import userRoute from "./route/user.route";
 import orderRoute from "./route/order.route";
+import wishlistRoute from "./route/wishlist.route";
 import BaseError from "./errors/Base.error";
 import { User } from "./entity/User";
 import { AuditLogAction, LogType, Role } from "./enums";
@@ -63,6 +64,7 @@ AppDataSource.initialize()
     app.use("/api/cart", cartRoute);
     app.use("/api/checkout", checkoutRoute);
     app.use("/api/order", orderRoute);
+    app.use("/api/wishlist", wishlistRoute);
 
     // error handling middleware
     app.use(globalErrorHandler);

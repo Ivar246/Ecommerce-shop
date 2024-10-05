@@ -8,7 +8,6 @@ export const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(err);
   if (err instanceof MulterError) {
     let error: ErrorResponse;
     error.status = 400;
@@ -29,10 +28,11 @@ export const globalErrorHandler = (
     });
   } else {
     const status = err.status || 500;
-    const code = err.code || 500;
+    const code = err.code || "HTTP Error Code";
     const title = err.title || "Internal Server Error";
     const message = err.message || "An unexpected error occurred";
     const source = err.source || {};
+
     res.status(status).json({
       status,
       title,

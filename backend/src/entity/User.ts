@@ -1,9 +1,19 @@
-import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { Role } from "../enums";
-import { Checkout } from "./Checkout"
+import { Checkout } from "./Checkout";
 import { Cart } from "./Cart";
 import { Order } from "./Order";
 import { Exclude } from "class-transformer";
+import { Wishlist } from "./Wishlist";
 
 /**
  * @openapi
@@ -39,45 +49,46 @@ import { Exclude } from "class-transformer";
 
 @Entity("users")
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column("varchar")
-    username: string
+  @Column("varchar")
+  username: string;
 
-    @Column({
-        type: "varchar",
-        unique: true
-    })
-    email: string
+  @Column({
+    type: "varchar",
+    unique: true,
+  })
+  email: string;
 
-    @Column({
-        type: "varchar",
+  @Column({
+    type: "varchar",
+  })
+  @Exclude()
+  password: string;
 
-    })
-    @Exclude()
-    password: string
+  @Column({
+    type: "enum",
+    enum: Role,
+    default: Role.USER,
+  })
+  role: Role;
 
-    @Column({
-        type: "enum",
-        enum: Role,
-        default: Role.USER
-    })
-    role: Role
+  @OneToMany(() => Checkout, (checkout) => checkout.user)
+  checkouts: Checkout[];
 
-    @OneToMany(() => Checkout, checkout => checkout.user)
-    checkouts: Checkout[]
+  @OneToOne(() => Cart, (cart) => cart.user, { cascade: true })
+  cart: Cart;
 
-    @OneToOne(() => Cart, cart => cart.user, { cascade: true })
-    cart: Cart
+  @OneToMany(() => Order, (order) => order.user, { cascade: true })
+  orders: Order[];
 
-    @OneToMany(() => Order, order => order.user, { cascade: true })
-    orders: Order[]
+  @OneToOne(() => Wishlist, (Wishlist) => Wishlist.user)
+  wishlist: Wishlist;
 
-    @CreateDateColumn()
-    createdAt: Date
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date
-
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
