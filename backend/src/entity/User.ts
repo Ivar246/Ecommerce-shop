@@ -14,6 +14,8 @@ import { Cart } from "./Cart";
 import { Order } from "./Order";
 import { Exclude } from "class-transformer";
 import { Wishlist } from "./Wishlist";
+import { ProductLikes } from "./Like";
+import { Comment } from "./Comment";
 
 /**
  * @openapi
@@ -85,6 +87,12 @@ export class User {
 
   @OneToOne(() => Wishlist, (Wishlist) => Wishlist.user)
   wishlist: Wishlist;
+
+  @OneToMany(() => ProductLikes, (productLikes) => productLikes.user)
+  productLikes: ProductLikes[];
+
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 
   @CreateDateColumn()
   createdAt: Date;

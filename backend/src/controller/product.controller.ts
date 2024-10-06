@@ -93,6 +93,7 @@ class ProductController {
     res: Response,
     next: NextFunction
   ) => {
+    console.log(req.ips);
     try {
       const product = await this.productService.getOne(
         req.params.product_id,
@@ -103,7 +104,7 @@ class ProductController {
 
       auditLog({
         action: AuditLogAction.CREATE,
-        message: "Create new product",
+        message: "Fetch single product",
         logType: LogType.INFO,
         ip: req.ip,
         module: "Product",
@@ -154,6 +155,19 @@ class ProductController {
     try {
       const response = await this.productService.removeImage(
         +req.params["image_id"]
+      );
+
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  likeProduct = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const response = await this.productService.likeProduct(
+        req.user.id,
+        +req.params["product_id"]
       );
 
       return res.json(response);

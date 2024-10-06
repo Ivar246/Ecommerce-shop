@@ -12,6 +12,8 @@ import { OrderItem } from "./OrderItem";
 import { Image } from "./Image";
 import { Wishlist } from "./Wishlist";
 import { WishlistItem } from "./WishlistItem";
+import { ProductLikes } from "./Like";
+import { Comment } from "./Comment";
 
 /**
  * @openapi
@@ -130,6 +132,9 @@ export class Product {
   @Column({ type: "int", default: 0 })
   view_count: number;
 
+  @Column({ type: "int", default: 0 })
+  likes_count: number;
+
   @OneToMany(() => CartItem, (cartItem) => cartItem.product)
   cart_items: CartItem[];
 
@@ -141,6 +146,12 @@ export class Product {
 
   @OneToMany(() => WishlistItem, (wishlistItem) => wishlistItem.product)
   wishlistItems: WishlistItem[];
+
+  @OneToMany(() => ProductLikes, (productLikes) => productLikes.product)
+  productLikes: ProductLikes[];
+
+  @OneToMany(() => Comment, (comment) => comment.product)
+  comments: Comment[];
 
   @CreateDateColumn()
   createdAt: Date;

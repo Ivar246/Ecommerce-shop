@@ -14,16 +14,20 @@ import { Image } from "../entity/Image";
 import { deleteFile } from "../utils/deleteFile";
 import path from "path";
 import { ProductView } from "../entity/ProductView";
+import { ProductLikes } from "../entity/Like";
+import { User } from "../entity/User";
 
 export class ProductService {
   private productRepository: Repository<Product>;
   private imageRepository: Repository<Image>;
   private productViewRepository: Repository<ProductView>;
+  private productLikeRepository: Repository<ProductLikes>;
 
   constructor() {
     this.productRepository = AppDataSource.getRepository(Product);
     this.imageRepository = AppDataSource.getRepository(Image);
     this.productViewRepository = AppDataSource.getRepository(ProductView);
+    this.productLikeRepository = AppDataSource.getRepository(ProductLikes);
   }
 
   async add(data: CreateProductDto, files: UploadFileType): Promise<Product> {
@@ -198,6 +202,57 @@ export class ProductService {
       return {
         message: `image with id ${imageId} has beed deleted successfully.`,
       };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  likeProduct = async (user_id: number, product_id: number) => {
+    try {
+      const product = await this.productRepository.findOne({
+        where: { id: product_id },
+      });
+
+      if (!product) {
+        throw new ProductNotFoundError(
+          `product with id ${product_id} not found.`
+        );
+      }
+
+      // see if user has already liked the product
+      let likeProduct = await this.productLikeRepository.findOne({
+        where: { product: { id: product_id }, user: { id: user_id } },
+      });
+
+      if (likeProduct) {
+        // if user already liked the product dislike it
+        await this.productLikeRepository.delete({ id: likeProduct.id });
+
+        product.likes_count -= 1;
+        await this.productRepository.save(product);
+
+        return {
+          liked: false,
+          message: `you have disliked product with id ${product_id}`,
+        };
+      } else {
+        // like process
+        likeProduct = new ProductLikes();
+        likeProduct.product = product;
+        likeProduct.user = await AppDataSource.getRepository(User).findOne({
+          where: { id: user_id },
+        });
+        await this.productLikeRepository.save(likeProduct);
+
+        // increase like count
+        product.likes_count += 1;
+        await this.productRepository.save(product);
+
+        return {
+          liked: true,
+          message: `you have liked product with id ${product_id}`,
+        };
+      }
     } catch (error) {
       throw error;
     }

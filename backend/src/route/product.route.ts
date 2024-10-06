@@ -262,4 +262,6 @@ router.delete(
   productController.removeImage
 );
 
+router.post("/:product_id/like", authenticated, productController.likeProduct);
+
 export default router;
