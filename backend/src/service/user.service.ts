@@ -25,17 +25,16 @@ export class UserService {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(data.password, salt);
 
-      // creating wishlist
-      const wishlist = new Wishlist();
-      const savedWishlist = await this.wishlistRepository.save(wishlist);
-
       const newUser = this.userRepository.create();
       newUser.email = data.email;
       newUser.username = data.username;
       newUser.password = hash;
-      newUser.wishlist = savedWishlist;
 
       await this.userRepository.save(newUser);
+
+      // creating wishlist
+      const wishlist = new Wishlist();
+      const savedWishlist = await this.wishlistRepository.save(wishlist);
 
       return newUser;
     } catch (error) {

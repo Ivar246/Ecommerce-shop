@@ -263,8 +263,17 @@ router.delete(
   productController.removeImage
 );
 
+// like start
 router.post("/:product_id/like", authenticated, productController.likeProduct);
 
+router.get(
+  "/liked/products",
+  authenticated,
+  productController.fetchLikedProducts
+);
+// like end
+
+// review start
 router.post("/:product_id/review", authenticated, reviewController.addReview);
 
 router.get(
@@ -272,5 +281,14 @@ router.get(
   authenticated,
   reviewController.getProductReviews
 );
+
+router.get(
+  "/:product_id/review",
+  authenticated,
+  reviewController.fetchUserProductReview
+);
+
+router.put("/review/:review_id", authenticated, reviewController.editReview);
+// review end
 
 export default router;

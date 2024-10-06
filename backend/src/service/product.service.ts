@@ -16,6 +16,7 @@ import path from "path";
 import { ProductView } from "../entity/ProductView";
 import { ProductLikes } from "../entity/Like";
 import { User } from "../entity/User";
+import { appConfig } from "../config";
 
 export class ProductService {
   private productRepository: Repository<Product>;
@@ -36,10 +37,13 @@ export class ProductService {
         where: { name: data.name },
       });
 
-      const mainImagePath = files.main_image[0].path;
-
+      const mainImagePath =
+        appConfig.BACKEND_URL + "/" + files.main_image[0].path;
       const additionalImagesPath = files.additional_images
-        ? files.additional_images.map((additionalImage) => additionalImage.path)
+        ? files.additional_images.map(
+            (additionalImage) =>
+              appConfig.BACKEND_URL + "/" + additionalImage.path
+          )
         : [];
 
       if (isProdExist)
@@ -75,7 +79,7 @@ export class ProductService {
     }
   }
 
-  async getOne(id: number, ip: string): Promise<Product> {
+  async getOne(id: number, userEmail: string): Promise<Product> {
     try {
       const product = await this.productRepository.findOneBy({ id: id });
       if (!product) throw new NotFoundError(`Product with id ${id} not found`);
@@ -83,13 +87,13 @@ export class ProductService {
       let productView = await this.productViewRepository.findOne({
         where: {
           productId: id,
-          ip: ip,
+          email: userEmail,
         },
       });
 
       if (!productView) {
         productView = new ProductView();
-        productView.ip = ip;
+        productView.email = userEmail;
         productView.productId = product.id;
         await this.productViewRepository.save(productView);
 
@@ -174,7 +178,7 @@ export class ProductService {
         throw new ProductNotFoundError("Product with the id not found!");
       }
       const image = this.imageRepository.create({
-        url: filePath,
+        url: appConfig.BACKEND_URL + "/" + filePath,
         product: product,
       });
 
@@ -219,17 +223,19 @@ export class ProductService {
         );
       }
 
-      // see if user has already liked the product
-      let likeProduct = await this.productLikeRepository.findOne({
+      let likedProduct = await this.productLikeRepository.findOne({
         where: { product: { id: product_id }, user: { id: user_id } },
       });
 
-      if (likeProduct) {
+      // see if user has already liked the product
+      if (likedProduct) {
         // if user already liked the product dislike it
-        await this.productLikeRepository.delete({ id: likeProduct.id });
+        await this.productLikeRepository.delete({ id: likedProduct.id });
 
-        product.likes_count -= 1;
-        await this.productRepository.save(product);
+        // decrease likes count
+        await this.productRepository.update(product_id, {
+          likes_count: product.likes_count - 1,
+        });
 
         return {
           liked: false,
@@ -237,22 +243,38 @@ export class ProductService {
         };
       } else {
         // like process
-        likeProduct = new ProductLikes();
-        likeProduct.product = product;
-        likeProduct.user = await AppDataSource.getRepository(User).findOne({
+        likedProduct = new ProductLikes();
+        likedProduct.product = product;
+        likedProduct.user = await AppDataSource.getRepository(User).findOne({
           where: { id: user_id },
         });
-        await this.productLikeRepository.save(likeProduct);
+        await this.productLikeRepository.save(likedProduct);
 
         // increase like count
-        product.likes_count += 1;
-        await this.productRepository.save(product);
+        await this.productRepository.update(product_id, {
+          likes_count: product.likes_count + 1,
+        });
 
         return {
           liked: true,
           message: `you have liked product with id ${product_id}`,
         };
       }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  fetchLikedProducts = async (user_id: number) => {
+    try {
+      const likedProducts = await this.productRepository
+        .createQueryBuilder("product")
+        .innerJoin("product.productLikes", "like")
+        .innerJoin("like.user", "user")
+        .where("user.id = :user_id", { user_id: user_id })
+        .getMany();
+
+      return { likedProducts };
     } catch (error) {
       throw error;
     }

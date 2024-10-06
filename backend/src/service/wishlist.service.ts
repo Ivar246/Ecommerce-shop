@@ -31,7 +31,6 @@ class WishlistService {
         wishlist.user = await this.userRepository.findOne({
           where: { id: Equal(user_id) },
         });
-        console.log("kkk");
         userWishlist = await this.wishlistRepository.save(wishlist);
       }
 
@@ -64,19 +63,21 @@ class WishlistService {
       const savedWishlistItem = await this.wishlistItemRepository.save(
         newWishlistItem
       );
+      console.log(savedWishlistItem);
 
       const filteredWishlistItem = {
-        wishlist_id: savedWishlistItem.wishlistId,
-        product_id: savedWishlistItem.productId,
-        user_id: savedWishlistItem.wishlist.user.id,
+        wishlist_id: savedWishlistItem.wishlist?.id,
+        product_id: savedWishlistItem.product?.id,
+        user_id: user_id,
         created_at: savedWishlistItem.createdAt,
       };
 
       return {
-        wishlistItem: "filteredWishlistItem",
+        wishlistItem: filteredWishlistItem,
         message: "Item added to wishlist.",
       };
     } catch (error) {
+      console.log(error);
       throw error;
     }
   };
@@ -85,7 +86,7 @@ class WishlistService {
     try {
       const wishlist = await this.wishlistRepository.findOne({
         where: { user: { id: Equal(user_id) } },
-        relations: ["wishlistItems"],
+        relations: ["wishlistItems", "wishlistItems.product"],
       });
 
       if (!wishlist) {
@@ -107,6 +108,7 @@ class WishlistService {
 
       const wishlistItem = await this.wishlistItemRepository.findOne({
         where: { product: { id: product_id }, wishlist: { id: wishlist.id } },
+        relations: ["product"],
       });
 
       if (!wishlistItem) {
@@ -117,7 +119,16 @@ class WishlistService {
         wishlistItem.id
       );
 
-      return { removedItem: removedItem, message: "Item remove successfully." };
+      return {
+        removedItem: {
+          item_id: wishlistItem.id,
+          product: {
+            id: wishlistItem.product.id,
+            name: wishlistItem.product.name,
+          },
+        },
+        message: "Item remove successfully.",
+      };
     } catch (error) {
       throw error;
     }

@@ -94,6 +94,21 @@ export class User {
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
 
+  @Column({
+    type: "int",
+    default: 0,
+  })
+  failed_attempt: number;
+
+  @Column({ type: "bool", default: false })
+  is_lock: boolean;
+
+  @Column({
+    type: "timestamp",
+    nullable: true,
+  })
+  lockedAt: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

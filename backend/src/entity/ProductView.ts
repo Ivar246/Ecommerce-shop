@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 
 @Entity("product_view")
-@Unique(["productId", "ip"])
+@Unique(["productId", "email"])
 export class ProductView {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,11 +17,8 @@ export class ProductView {
   productId: number;
 
   @Column("varchar")
-  ip: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
+  email: string;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  viewedAt: Date;
 }

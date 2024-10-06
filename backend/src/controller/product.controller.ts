@@ -97,7 +97,7 @@ class ProductController {
     try {
       const product = await this.productService.getOne(
         req.params.product_id,
-        req.ip
+        req.user.email
       );
 
       res.status(200).json({ data: product });
@@ -168,6 +168,23 @@ class ProductController {
       const response = await this.productService.likeProduct(
         req.user.id,
         +req.params["product_id"]
+      );
+
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  fetchLikedProducts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      console.log("hello");
+      const response = await this.productService.fetchLikedProducts(
+        req.user.id
       );
 
       return res.json(response);

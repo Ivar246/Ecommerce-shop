@@ -23,7 +23,7 @@
  *             model:
  *               type: string
  *               example: "Product"
- * 
+ *
  *     DuplicateProductError:
  *       type: object
  *       properties:
@@ -45,7 +45,7 @@
  *             model:
  *               type: string
  *               example: "Product"
- * 
+ *
  *     EmptyCartError:
  *       type: object
  *       properties:
@@ -67,7 +67,7 @@
  *             model:
  *               type: string
  *               example: "Cart"
- * 
+ *
  *     EmailConflictError:
  *       type: object
  *       properties:
@@ -89,7 +89,7 @@
  *             model:
  *               type: string
  *               example: "User"
- * 
+ *
  *     PasswordIncorrectError:
  *       type: object
  *       properties:
@@ -111,7 +111,7 @@
  *             model:
  *               type: string
  *               example: "User"
- * 
+ *
  *     Error_500:
  *       type: object
  *       properties:
@@ -127,7 +127,7 @@
  *         code:
  *           type: integer
  *           example: 5000
- * 
+ *
  *     ErrorResponse:
  *       type: object
  *       properties:
@@ -155,7 +155,7 @@
  *               type: string
  *               description: The model associated with the error
  *               example: "User"
- * 
+ *
  *     UnauthorizedError:
  *       type: object
  *       properties:
@@ -183,7 +183,7 @@
  *               type: string
  *               description: The model associated with the error
  *               example: "Cart"
- * 
+ *
  *     BadRequestError:
  *       type: object
  *       properties:
@@ -207,11 +207,9 @@
  *               example: "Cart"
  */
 export interface ErrorResponse {
-    status: number,
-    title: string,
-    message: string,
-    code?: number,
-    source?: {
-        model: string,
-    }
+  status: number;
+  title: string;
+  message: string;
+  code?: number;
+  source?: {};
 }

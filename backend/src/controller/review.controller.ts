@@ -30,6 +30,35 @@ class ReviewController {
       next(error);
     }
   };
+
+  fetchUserProductReview = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const response = await reviewService.fetchUserProductReview(
+        req.user.id,
+        +req.params["product_id"]
+      );
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  editReview = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const response = await reviewService.editReview(
+        req.user,
+        +req.params["review_id"],
+        req.body["review_text"]
+      );
+      return res.json(response);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export const reviewController = new ReviewController();

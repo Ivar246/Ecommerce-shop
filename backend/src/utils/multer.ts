@@ -4,6 +4,7 @@ import multer from "multer";
 import { uploadConfig } from "../config";
 import { AppDataSource } from "../data-source";
 import { Product } from "../entity/Product";
+import { InvalidFileType } from "../errors";
 
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb: any) => {
@@ -52,7 +53,7 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
   if (mimetype && extname) {
     cb(null, true);
   } else {
-    cb(new Error("Only images are allowed!"), false);
+    cb(new InvalidFileType("Only images are allowed!"), false);
   }
 };
 

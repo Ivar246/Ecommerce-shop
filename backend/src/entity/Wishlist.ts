@@ -8,6 +8,7 @@ import {
   OneToOne,
   ManyToMany,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Product } from "./Product";
 import { User } from "./User";
@@ -24,7 +25,7 @@ export class Wishlist {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @ManyToMany(() => WishlistItem, (wishlistItem) => wishlistItem.wishlist)
+  @OneToMany(() => WishlistItem, (wishlistItem) => wishlistItem.wishlist)
   wishlistItems: WishlistItem[];
 
   @CreateDateColumn()

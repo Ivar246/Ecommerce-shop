@@ -66,3 +66,11 @@ export class ImageNotFound extends BaseError {
     this.code = CustomErrorCode.IMAGE_NOT_FOUND;
   }
 }
+
+export class InvalidFileType extends BaseError {
+  code: number;
+  constructor(message: string) {
+    super(message, 400, "INVALID FILE TYPE");
+    this.code = CustomErrorCode.INVALID_FILE_TYPE;
+  }
+}

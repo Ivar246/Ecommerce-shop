@@ -2,9 +2,16 @@ import { networkInterfaces } from "os";
 import { AppDataSource } from "../data-source";
 import { Product } from "../entity/Product";
 import { Review } from "../entity/Review";
-import { BadRequestError, ProductNotFoundError } from "../errors";
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+  ProductNotFoundError,
+} from "../errors";
 import { User } from "../entity/User";
 import { Repository } from "typeorm";
+import { Payload } from "../interface";
+import { Role } from "../enums";
 
 class ReviewService {
   reviewRepository: Repository<Review>;
@@ -69,6 +76,17 @@ class ReviewService {
 
   getProductReviews = async (product_id: number) => {
     try {
+      // check product exists or not
+      const product = await AppDataSource.getRepository(Product).findOneBy({
+        id: product_id,
+      });
+
+      if (!product) {
+        throw new ProductNotFoundError(
+          `product with id ${product_id} not found.`
+        );
+      }
+
       const reviews = await this.reviewRepository.find({
         where: { product: { id: product_id } },
         relations: ["user"],
@@ -87,7 +105,7 @@ class ReviewService {
     }
   };
 
-  userProductReview = async (user_id: number, product_id: number) => {
+  fetchUserProductReview = async (user_id: number, product_id: number) => {
     try {
       const review = await this.reviewRepository.findOne({
         where: { user: { id: user_id }, product: { id: product_id } },
@@ -97,7 +115,41 @@ class ReviewService {
     } catch (error) {}
   };
 
-  //   editReview = () => {};
+  editReview = async (
+    user: Payload,
+    review_id: number,
+    review_text: string
+  ) => {
+    try {
+      const review = await this.reviewRepository.findOne({
+        where: { id: review_id },
+        relations: ["user"],
+      });
+      // check review exist or not
+      if (!review) {
+        throw new NotFoundError(
+          `review with id ${review_id} not found`,
+          "REVIEW NOT FOUND"
+        );
+      }
+
+      // check ownership
+      if (review.user.id !== user.id) {
+        throw new ForbiddenError("You are not allowed to modify this review.");
+      }
+
+      const updatedReview = await this.reviewRepository.update(review_id, {
+        review_text: review_text,
+      });
+
+      return {
+        updatedReview: updatedReview,
+        message: "Review updated successfully.",
+      };
+    } catch (error) {
+      throw error;
+    }
+  };
 
   //   deleteReview = () => {
 
