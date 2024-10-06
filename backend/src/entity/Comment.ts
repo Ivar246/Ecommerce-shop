@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { User } from "./User";
@@ -10,6 +11,7 @@ import { Product } from "./Product";
 
 @Entity("comments")
 export class Comment {
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User, (user) => user.comments, { onDelete: "CASCADE" })
