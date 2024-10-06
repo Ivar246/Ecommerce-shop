@@ -16,6 +16,7 @@ import { WishlistItem } from "./entity/WishlistItem";
 import { Wishlist } from "./entity/Wishlist";
 import { ProductView } from "./entity/ProductView";
 import { ProductLikes } from "./entity/Like";
+import { Review } from "./entity/Review";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -41,6 +42,7 @@ export const AppDataSource = new DataSource({
     Wishlist,
     ProductView,
     ProductLikes,
+    Review,
   ],
   migrations: [AddFailedAttemptsAndLockToUsers1727924868429],
   migrationsTableName: "migrations",

@@ -13,7 +13,7 @@ import { Image } from "./Image";
 import { Wishlist } from "./Wishlist";
 import { WishlistItem } from "./WishlistItem";
 import { ProductLikes } from "./Like";
-import { Comment } from "./Comment";
+import { Review } from "./Review";
 
 /**
  * @openapi
@@ -150,8 +150,8 @@ export class Product {
   @OneToMany(() => ProductLikes, (productLikes) => productLikes.product)
   productLikes: ProductLikes[];
 
-  @OneToMany(() => Comment, (comment) => comment.product)
-  comments: Comment[];
+  @OneToMany(() => Review, (review) => review.product)
+  reviews: Review[];
 
   @CreateDateColumn()
   createdAt: Date;

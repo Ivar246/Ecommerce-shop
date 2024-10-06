@@ -9,21 +9,21 @@ import {
 import { User } from "./User";
 import { Product } from "./Product";
 
-@Entity("comments")
-export class Comment {
+@Entity("reviews")
+export class Review {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.comments, { onDelete: "CASCADE" })
+  @ManyToOne(() => User, (user) => user.reviews, { onDelete: "CASCADE" })
   user: User;
 
-  @ManyToOne(() => Product, (product) => product.comments, {
+  @ManyToOne(() => Product, (product) => product.reviews, {
     onDelete: "CASCADE",
   })
   product: Product;
 
   @Column({ type: "varchar", length: 150 })
-  comment: string;
+  review_text: string;
 
   @CreateDateColumn()
   created_at: string;

@@ -4,6 +4,7 @@ import authenticated from "../middleware/authenticate.middleware";
 import authorize from "../middleware/authorize.middleware";
 import { Role } from "../enums";
 import { upload } from "../utils/multer";
+import { reviewController } from "../controller/review.controller";
 
 const router = Router();
 
@@ -263,5 +264,13 @@ router.delete(
 );
 
 router.post("/:product_id/like", authenticated, productController.likeProduct);
+
+router.post("/:product_id/review", authenticated, reviewController.addReview);
+
+router.get(
+  "/:product_id/reviews",
+  authenticated,
+  reviewController.getProductReviews
+);
 
 export default router;

@@ -15,7 +15,7 @@ import { Order } from "./Order";
 import { Exclude } from "class-transformer";
 import { Wishlist } from "./Wishlist";
 import { ProductLikes } from "./Like";
-import { Comment } from "./Comment";
+import { Review } from "./Review";
 
 /**
  * @openapi
@@ -91,8 +91,8 @@ export class User {
   @OneToMany(() => ProductLikes, (productLikes) => productLikes.user)
   productLikes: ProductLikes[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
-  comments: Comment[];
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 
   @CreateDateColumn()
   createdAt: Date;
