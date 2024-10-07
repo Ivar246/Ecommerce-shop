@@ -74,3 +74,15 @@ export class InvalidFileType extends BaseError {
     this.code = CustomErrorCode.INVALID_FILE_TYPE;
   }
 }
+
+export class AccountLockedError extends BaseError {
+  code: number;
+  constructor() {
+    super(
+      "your account has been locked, please use otp to unlock or wait for 24 hours",
+      400,
+      " ACCOUNT LOCKED"
+    );
+    this.code = CustomErrorCode.ACCOUNT_LOCKED;
+  }
+}

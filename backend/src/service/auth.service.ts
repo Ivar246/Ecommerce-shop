@@ -2,7 +2,12 @@ import { LoginDto, CreateUserDto } from "../dto";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
 import { UserService } from "./user.service";
-import { BadRequestError, ConflictError, InvalidRefreshToken } from "../errors";
+import {
+  BadRequestError,
+  ConflictError,
+  InvalidRefreshToken,
+  AccountLockedError,
+} from "../errors";
 import { AuthConfig } from "../config";
 import { Payload, Tokens } from "../interface";
 import { generateTokens } from "../utils/generateToken";
@@ -11,6 +16,7 @@ import { RefreshToken } from "../entity/RefreshToken";
 import { RtDetail } from "../type";
 import { Repository } from "typeorm";
 import { User } from "../entity/User";
+import { MILLISECONDS24, parseIsoDate } from "../utils/dateUtils";
 
 export class AuthService {
   private userService: UserService;
@@ -30,9 +36,19 @@ export class AuthService {
       // check if account is locked
       if (user.is_lock) {
         // check time of locked >  24 hours, automatic reset
-        // set is_lock false
-        // set failed_attempt 0
-        // if locked period < 24 throw error
+        const now = new Date();
+        if (
+          parseIsoDate(user.lockedAt).getTime() - now.getTime() >=
+          MILLISECONDS24
+        ) {
+          // set is_lock to false and failed attempts to 0
+          await this.userRepository.update(user.id, {
+            is_lock: false,
+            failed_attempt: 0,
+          });
+        } else {
+          throw new AccountLockedError();
+        }
       }
 
       // check password match
@@ -82,6 +98,22 @@ export class AuthService {
       throw error;
     }
   }
+
+  handleGoogleOauthSuccess = async (user: Payload) => {
+    try {
+      const payload: Payload = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+      const { at, rt } = await generateTokens(payload);
+      await this.saveRt(user.id, await this.getHash(rt));
+
+      return { at, rt };
+    } catch (error) {
+      throw error;
+    }
+  };
 
   async getRefreshToken(rt_Detail: RtDetail): Promise<Tokens> {
     try {

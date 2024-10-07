@@ -1,4 +1,5 @@
 export enum CustomErrorCode {
+  ACCOUNT_LOCKED = 5000,
   IMAGE_NOT_FOUND = 3001,
   INVALID_FILE_TYPE = 2999,
   LIMIT_FILE_SIZE = 2998,

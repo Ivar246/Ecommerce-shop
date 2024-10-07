@@ -20,6 +20,9 @@ import { apiRequestLogger } from "./utils/apiRequestLogger";
 import { globalErrorHandler } from "./middleware/globalErrorHandler.middleware";
 import cookieParser from "cookie-parser";
 import path from "path";
+import passport from "passport";
+import { useGoogleStrategy } from "./passport/googleStrategy";
+import session from "express-session";
 
 const app = express();
 
@@ -38,7 +41,6 @@ AppDataSource.initialize()
   })
   .then(() => {
     const corsOptions: CorsOptions = {
-      origin: [appConfig.FRONTEND_URL],
       methods: ["PUT", "GET", "POST", "DELETE"],
     };
 
@@ -51,6 +53,18 @@ AppDataSource.initialize()
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // passport
+
+    app.use(passport.initialize());
+    app.use(
+      session({
+        secret: "secret",
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
+
+    useGoogleStrategy(passport);
     // morgan logger to log api request info
     apiRequestLogger(app);
     app.use(

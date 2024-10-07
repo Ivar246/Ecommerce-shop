@@ -65,9 +65,15 @@ export class User {
 
   @Column({
     type: "varchar",
+    nullable: true,
   })
-  @Exclude()
   password: string;
+
+  @Column({
+    type: "varchar",
+    nullable: true,
+  })
+  google_id: string;
 
   @Column({
     type: "enum",

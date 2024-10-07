@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { authController } from "../controller/auth.controller";
 import { validateRefreshToken } from "../middleware/refreshTokenValidator.middleware";
+import passport from "passport";
 
-const router = Router()
+const router = Router();
 
 /**
  * @openapi
@@ -74,9 +75,29 @@ const router = Router()
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/login", authController.login)
+router.post("/login", authController.login);
 
-router.post("/register", authController.register)
+router.post("/register", authController.register);
 
-router.get("/tokens", validateRefreshToken, authController.getRefreshToken)
-export default router
+router.get("/tokens", validateRefreshToken, authController.getRefreshToken);
+
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/api/auth/google/failure",
+  }),
+  authController.handleGoogleOauthSuccess
+);
+
+router.get("/google/failure", (req, res, next) => {
+  next(new Error("Login failed"));
+});
+
+export default router;
